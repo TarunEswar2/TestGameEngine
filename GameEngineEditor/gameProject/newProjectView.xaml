@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="GameEngineEditor.gameProject.newProjectView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GameEngineEditor.gameProject"
+             mc:Ignorable="d" Width="1000"
+             d:DesignHeight="450" d:DesignWidth="1000"
+             Background="Transparent">
+    <UserControl.DataContext>
+        <local:newProject />
+    </UserControl.DataContext>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <ListBox Width="200" Height="300" ItemsSource="{Binding ProjectTemplates}" x:Name="templateListBox" SelectedIndex="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{Binding Icon}" Margin="0,0,5,0"/>
+                                <TextBlock Text="{Binding projectType}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Border Width="600" Height="300" Margin="5,0,0,0">
+                    <Border.Background>
+                        <ImageBrush ImageSource="{Binding Path= SelectedItem.Screenshot, ElementName = templateListBox}"/>
+                    </Border.Background>
+                </Border>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" 
+                        Margin="0,30,0,0">
+                <TextBlock Text="Name" Width="50" />
+                <TextBox Width="550" Text="{Binding ProjectName, UpdateSourceTrigger = PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" 
+                Margin="0,5,0,0">
+                <TextBlock Text="Path" Width="50" />
+                <TextBox Width="500" Text="{Binding ProjectPath, UpdateSourceTrigger = PropertyChanged}"/> 
+                <Button Content="Browse" Width="50"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" 
+        Margin="0,10,0,0">
+                <Button Content="Create Project" Width="100" IsDefault="True" 
+                        Click="onCreateButton_Click" IsEnabled="{Binding IsValid}"/>
+                <Button Content="Exit Project" Width="100" Margin="20,0,0,0" IsCancel="True"/>
+            </StackPanel>
+            <TextBlock Text="{Binding ErrorMessage}" Width="500"  Margin="0,20,0,0" VerticalAlignment="Center" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
