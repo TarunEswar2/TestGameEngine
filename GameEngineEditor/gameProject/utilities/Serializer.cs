@@ -16,12 +16,14 @@ namespace GameEngineEditor.gameProject.utilities
         {
             try
             {
-                var fs = new FileStream(path, FileMode.Create);
-                var serializer = new DataContractSerializer(typeof(T));
-                serializer.WriteObject(fs, inst);
+                using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                {
+                    var serializer = new DataContractSerializer(typeof(T));
+                    serializer.WriteObject(fs, inst);
+                }
             }
-            catch(Exception ex) 
-            { 
+            catch (Exception ex)
+            {
                 Debug.WriteLine(ex.Message);
             }
         }
@@ -30,10 +32,12 @@ namespace GameEngineEditor.gameProject.utilities
         {
             try
             {
-                var fs = new FileStream(path, FileMode.Open);
-                var serializer = new DataContractSerializer(typeof(T));
-                T inst = (T)serializer.ReadObject(fs);
-                return inst;
+                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    var serializer = new DataContractSerializer(typeof(T));
+                    T inst = (T)serializer.ReadObject(fs);
+                    return inst;
+                }
             }
             catch (Exception ex)
             {

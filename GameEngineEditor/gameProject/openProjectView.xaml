@@ -7,15 +7,36 @@
              mc:Ignorable="d" Width="1000"
              d:DesignHeight="450" d:DesignWidth="1000"
              Background="Transparent">
+    <UserControl.DataContext>
+        <local:openProject />
+    </UserControl.DataContext>
     <StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <ListBox Width="195" Height="250" />
-            <Border Width="400" Height="250" Margin="5,0,0,0" />
+            <ListBox Width="195" Height="300" ItemsSource="{Binding Projects}" x:Name="projectsListBox" SelectedIndex="0">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <EventSetter Event="MouseDoubleClick" Handler="onListBoxItem_Mouse_DoubleClick"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="{Binding Icon}" Margin="0,0,5,0"/>
+                            <TextBlock Text="{Binding ProjectName}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Border Width="600" Height="300" Margin="5,0,0,0" >
+                <Border.Background>
+                    <ImageBrush ImageSource="{Binding Path= SelectedItem.Screenshot, ElementName = projectsListBox}"/>
+                </Border.Background>
+            </Border>
         </StackPanel>
         
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" 
   Margin="0,50,0,0">
-            <Button Content="Open Project" Width="100" IsDefault="True"/>
+            <Button Content="Open Project" Width="100" IsDefault="True" Click="onCLickOpen_Button"/>
             <Button Content="Exit Project" Width="100" Margin="20,0,0,0" IsCancel="True"/>
         </StackPanel>
     </StackPanel>

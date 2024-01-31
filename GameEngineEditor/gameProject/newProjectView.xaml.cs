@@ -34,6 +34,8 @@ namespace GameEngineEditor.gameProject
             if (!string.IsNullOrEmpty(projectPath))
             {
                 dialogResult = true;
+                var project = openProject.open(new ProjectData() { ProjectName = vm.ProjectName, ProjectPath = projectPath });
+                win.DataContext = project; //setting the data context
             }
             win.DialogResult = dialogResult;
             win.Close();

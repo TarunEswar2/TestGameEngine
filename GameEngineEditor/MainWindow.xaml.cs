@@ -1,5 +1,6 @@
 ﻿using GameEngineEditor.gameProject;
 using GameEngineEditor.TestFolder;
+using System.ComponentModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,12 +23,7 @@ namespace GameEngineEditor
         {
             InitializeComponent();
             Loaded += onMainWindowLoaded;//event handler to open window Browser
-        }
-
-        private void openTestWindow()
-        {
-            TestWindow testWindow = new TestWindow();
-            testWindow.Show();
+            Closing += onMainWindowClosing;
         }
 
         private void onMainWindowLoaded(object sender, RoutedEventArgs e)
@@ -36,16 +32,23 @@ namespace GameEngineEditor
             openProjectBrowserDialog();
         }
 
+        private void onMainWindowClosing(object? sender, CancelEventArgs e)
+        {
+            Closing -= onMainWindowClosing;
+            Project.Current?.unLoad();
+        }
+
         private void openProjectBrowserDialog()
         {
             var projectBrowserWindow = new projectBrowseDialog();
-            if (projectBrowserWindow.ShowDialog() == false)
+            if (projectBrowserWindow.ShowDialog() == false || projectBrowserWindow.DataContext == null)
             {
                 Application.Current.Shutdown();
             }
             else
             {
-
+                Project.Current?.unLoad();
+                DataContext = projectBrowserWindow.DataContext;
             }
         }
     }
