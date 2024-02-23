@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GameEngineEditor"
         xmlns:editors="clr-namespace:GameEngineEditor.Editors"
         mc:Ignorable="d"
-        Title="TestGameEngine Editor" Height="450" Width="800">
+        Title="TestGameEngine Editor" Height="540" Width="960">
     
     <Grid>
         <editors:WorldEditorView/>

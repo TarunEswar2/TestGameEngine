@@ -1,4 +1,4 @@
-﻿using GameEngineEditor.gameProject.utilities;
+﻿using GameEngineEditor.utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Shapes;
 
 namespace GameEngineEditor.gameProject
 {
@@ -51,6 +52,8 @@ namespace GameEngineEditor.gameProject
             catch(Exception ex)
             {
                 Debug.WriteLine(ex.Message);
+                Logger.Log(MessageType.Error, $"Failed to open Project from {_applicationDataPath}");
+                throw;
             }
         }
 

@@ -7,7 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <PlatformTarget>x64</PlatformTarget>
-    <BaseOutputPath>C:\Users\Tarun Eswar R\Desktop\post-clg\TestGameEngine\x64</BaseOutputPath>
+    <BaseOutputPath>C:\Users\Tarun\Desktop\Projects\TestGameEngine\x64</BaseOutputPath>
 	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 

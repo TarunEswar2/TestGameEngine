@@ -4,9 +4,60 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GameEngineEditor.Editors"
-             mc:Ignorable="d" Background="Blue"
-             d:DesignHeight="450" d:DesignWidth="800">
+             xmlns:utl="clr-namespace:GameEngineEditor.utilities"
+             xmlns:proj="clr-namespace:GameEngineEditor.gameProject"
+             mc:Ignorable="d" Background="White"
+             Focusable="True"
+             d:DataContext="{d:DesignInstance Type = proj:Project, IsDesignTimeCreatable = True}"
+             d:DesignHeight="540" d:DesignWidth="960">
+
+    <UserControl.InputBindings>
+        <KeyBinding Command="{Binding undoCommand}" Key="Z" Modifiers="Ctrl"/>
+        <KeyBinding Command="{Binding redoCommand}" Key="Z" Modifiers="Ctrl+Shift"/>
+        <KeyBinding Command="{Binding saveCommand}" Key="S" Modifiers="Ctrl"/>
+    </UserControl.InputBindings>
+
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <Button Content="Undo" Command="{Binding undoCommand}"/>
+            <Button Content="Redo" Command="{Binding redoCommand}" Margin="5,0,0,0"/>
+        </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid   Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+                <TabControl Grid.Row="1">
+                    <TabItem Header = "History">
+                        <utl:undoRedoView DataContext="{Binding UndoRedo}"/>        
+                    </TabItem>
+                    <TabItem Header= "Log">
+                        <utl:LoggerView/>
+                    </TabItem>
+                </TabControl>
+                
+            </Grid>
+            <GridSplitter Grid.Column="1" HorizontalAlignment="left" VerticalAlignment="Stretch" Width="5"/>
+            <Grid   Grid.Column="1" Margin="5,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="5"/>
+                <local:ProjectObjectsView/>
+                <local:gameEntityView Grid.Row ="1"/>
+                
+            </Grid>
+        </Grid>
     </Grid>
 </UserControl>

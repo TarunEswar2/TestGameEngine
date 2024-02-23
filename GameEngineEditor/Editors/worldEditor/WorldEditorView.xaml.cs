@@ -1,5 +1,7 @@
-﻿using System;
+﻿using GameEngineEditor.gameProject;
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +25,15 @@ namespace GameEngineEditor.Editors
         public WorldEditorView()
         {
             InitializeComponent();
+            Loaded += onWorldEditorLoaded;
+        }
+
+        private void onWorldEditorLoaded(object sender, RoutedEventArgs e)
+        {
+            Loaded -= onWorldEditorLoaded;
+            Focus();
+
+            ((INotifyCollectionChanged)Project.UndoRedo.UndoList).CollectionChanged += (s, e) => Focus();
         }
     }
 }

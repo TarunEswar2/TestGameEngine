@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameEngineEditor.gameProject.utilities
+namespace GameEngineEditor.utilities
 {
     public class FileHelper
     {

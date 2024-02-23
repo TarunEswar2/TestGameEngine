@@ -24,6 +24,18 @@ namespace GameEngineEditor.gameProject
         { 
             InitializeComponent();
             openProjectButton.IsChecked = true;
+            Loaded += onProjectBrowserLoaded;
+        }
+
+        private void onProjectBrowserLoaded(object sender, RoutedEventArgs e)
+        {
+            Loaded -= onProjectBrowserLoaded;
+            if(!openProject.Projects.Any())
+            {
+                openProjectButton.IsEnabled = false;
+                openProjectView.Visibility = Visibility.Hidden;
+                onToggleButton_click(newProjectButton, new RoutedEventArgs());
+            }
         }
 
         private void onToggleButton_click(object sender, RoutedEventArgs e)

@@ -23,6 +23,12 @@ namespace GameEngineEditor.gameProject
         public openProjectView()
         {
             InitializeComponent();
+
+            Loaded += (s, e) =>
+            {
+                var item = projectsListBox.ItemContainerGenerator.ContainerFromIndex(projectsListBox.SelectedIndex) as ListBoxItem;
+                item?.Focus();
+            };
         }
 
         private void onCLickOpen_Button(object sender, RoutedEventArgs e)

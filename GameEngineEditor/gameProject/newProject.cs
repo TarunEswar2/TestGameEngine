@@ -1,4 +1,4 @@
-﻿using GameEngineEditor.gameProject.utilities;
+﻿using GameEngineEditor.utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,7 +10,9 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Shapes;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Path = System.IO.Path;
 
 namespace GameEngineEditor.gameProject
 {
@@ -61,6 +63,8 @@ namespace GameEngineEditor.gameProject
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
+                Logger.Log(MessageType.Error, $"Failed to read Proejct templates");
+                throw;
             }
         }
 
@@ -198,7 +202,8 @@ namespace GameEngineEditor.gameProject
             catch(Exception ex)
             {
                 Debug.WriteLine(ex.Message);
-                return string.Empty;
+                Logger.Log(MessageType.Error, $"Failed to create {ProjectName}");
+                throw;
             }
         }
     }

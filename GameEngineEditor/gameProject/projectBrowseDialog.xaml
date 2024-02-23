@@ -60,8 +60,8 @@
             
         </StackPanel>
         <StackPanel Orientation="Horizontal" Grid.Row="1" x:Name="browserContent">
-            <local:openProjectView />
-            <local:newProjectView />
+            <local:openProjectView x:Name="openProjectView"/>
+            <local:newProjectView x:Name="newProjectView"/>
         </StackPanel>
     </Grid>
 </Window>

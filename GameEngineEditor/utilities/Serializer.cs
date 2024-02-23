@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Shapes;
 
-namespace GameEngineEditor.gameProject.utilities
+namespace GameEngineEditor.utilities
 {
     public static class Serializer
     {
@@ -25,6 +25,8 @@ namespace GameEngineEditor.gameProject.utilities
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
+                Logger.Log(MessageType.Error, $"Failed to serialize {inst} to {path}");
+                throw;
             }
         }
 
@@ -42,7 +44,8 @@ namespace GameEngineEditor.gameProject.utilities
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
-                return default(T);
+                Logger.Log(MessageType.Error, $"Failed to deserialize {path}");
+                throw;
             }
         }
     }
