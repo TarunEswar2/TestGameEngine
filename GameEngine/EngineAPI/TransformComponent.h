@@ -12,7 +12,7 @@ namespace tge::transform{
 		constexpr transform_id get_id() const { return _id; }
 		constexpr bool is_valid() const { return id::isvalid(_id); }
 	
-		math::v4 rotation() const;
+		math::v4 rotation() const;//definitions in transform.cpp
 		math::v3 position() const;
 		math::v3 scale() const;
 	private:

@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
@@ -20,6 +21,7 @@ namespace GameEngineEditor.gameProject
     /// </summary>
     public partial class projectBrowseDialog : Window
     {
+        private readonly CubicEase _easing = new CubicEase() { EasingMode = EasingMode.EaseInOut};
         public projectBrowseDialog()
         { 
             InitializeComponent();
@@ -45,7 +47,9 @@ namespace GameEngineEditor.gameProject
                 if(newProjectButton.IsChecked == true)
                 {
                     newProjectButton.IsChecked = false;
-                    browserContent.Margin = new Thickness(0, 0, 0, 0);
+                    AnimateToOpenProject();
+                    openProjectView.IsEnabled = true;
+                    newProjectView.IsEnabled = false;
                 }
                 openProjectButton.IsChecked = true;
             }
@@ -54,11 +58,26 @@ namespace GameEngineEditor.gameProject
                 if (openProjectButton.IsChecked == true)
                 {
                     openProjectButton.IsChecked = false;
-                    browserContent.Margin = new Thickness(-1000, 0, 0, 0);
+                    AnimateToNewProject();
+                    openProjectView.IsEnabled = false;
+                    newProjectView.IsEnabled = true;
                 }
                 newProjectButton.IsChecked = true;
             }
         }
 
+        private void AnimateToNewProject()
+        {
+            var animation = new ThicknessAnimation(new Thickness(0 ,0 ,0, 0), new Thickness(-1000, 0, 0, 0), new Duration(TimeSpan.FromSeconds(0.5)));
+            animation.EasingFunction = _easing;
+            browserContent.BeginAnimation(MarginProperty, animation);
+        }
+
+        private void AnimateToOpenProject()
+        {
+            var animation = new ThicknessAnimation(new Thickness(-1000, 0, 0, 0), new Thickness(0, 0, 0, 0), new Duration(TimeSpan.FromSeconds(0.5)));
+            animation.EasingFunction = _easing;
+            browserContent.BeginAnimation(MarginProperty, animation);
+        }
     }
 }

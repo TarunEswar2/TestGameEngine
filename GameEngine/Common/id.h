@@ -5,7 +5,7 @@ namespace tge::id
 {
 	using id_type = u32;
 
-	namespace internal {
+	namespace detail {
 		constexpr u32 generation_bits{ 8 };
 		constexpr u32 index_bits(sizeof(id_type) * 8 - generation_bits); //sizeof is in bytes
 		constexpr id_type index_mask{ (id_type{1} << index_bits) - 1 };
@@ -16,8 +16,8 @@ namespace tge::id
 	constexpr u32 min_deleted_elements{ 1024 };
 
 
-	using generation_type = std::conditional_t<internal::generation_bits <= 16, std::conditional_t<internal::generation_bits <= 8, u8, u16>, u32>;
-	static_assert(sizeof(generation_type) * 8 >= internal::generation_bits); //prevents generation bits > 31
+	using generation_type = std::conditional_t<detail::generation_bits <= 16, std::conditional_t<detail::generation_bits <= 8, u8, u16>, u32>;
+	static_assert(sizeof(generation_type) * 8 >= detail::generation_bits); //prevents generation bits > 31
 	static_assert(sizeof(id_type) - sizeof(generation_type) > 0);
 
 	//max id
@@ -28,21 +28,21 @@ namespace tge::id
 
 	constexpr id_type index(id_type id)
 	{
-		id_type index{ id & internal::index_mask };
-		assert(index != internal::index_mask);
-		return id & internal::index_mask;
+		id_type index{ id & detail::index_mask };
+		assert(index != detail::index_mask);
+		return id & detail::index_mask;
 	}
 
 	constexpr id_type generation(id_type id)
 	{
-		return (id >> internal::index_bits) & internal::generaton_mask;
+		return (id >> detail::index_bits) & detail::generaton_mask;
 	}
 
 	constexpr id_type new_generation(id_type id)
 	{
 		const id_type gen = id::generation(id) + 1;
-		assert(gen < ((id_type{ 1 } << internal::generation_bits) - 1));
-		return id::index(id) | (gen << internal::index_bits);
+		assert(gen < ((id_type{ 1 } << detail::generation_bits) - 1));
+		return id::index(id) | (gen << detail::index_bits);
 	}
 
 #if _DEBUG

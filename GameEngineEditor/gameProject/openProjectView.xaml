@@ -7,6 +7,7 @@
              mc:Ignorable="d" Width="1000"
              d:DesignHeight="450" d:DesignWidth="1000"
              Background="Transparent">
+    
     <UserControl.DataContext>
         <local:openProject />
     </UserControl.DataContext>
@@ -14,15 +15,20 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
             <ListBox Width="195" Height="300" ItemsSource="{Binding Projects}" x:Name="projectsListBox" SelectedIndex="0">
                 <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
+                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource ListBoxItemStyle}">
                         <EventSetter Event="MouseDoubleClick" Handler="onListBoxItem_Mouse_DoubleClick"/>
                     </Style>
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="{Binding Icon}" Margin="0,0,5,0"/>
-                            <TextBlock Text="{Binding ProjectName}"/>
+                        <StackPanel Width="180">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{Binding Icon}" Margin="0,0,5,0"/>
+                                <TextBlock Text="{Binding ProjectName}" FontSize="18" FontFamily="Bahnschrift condensed"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <TextBlock Text="{Binding ProjectPath}" FontSize="6" TextTrimming="WordEllipsis"/>
+                            <TextBlock Text="{Binding Date}" FontSize="8" TextTrimming="WordEllipsis"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

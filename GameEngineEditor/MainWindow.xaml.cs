@@ -1,6 +1,7 @@
 ﻿using GameEngineEditor.gameProject;
 using GameEngineEditor.TestFolder;
 using System.ComponentModel;
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,6 +20,8 @@ namespace GameEngineEditor
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static string TgePath { get; private set; } = "C:\\Users\\Tarun\\Desktop\\Projects\\TestGameEngine";
+
         public MainWindow()
         {
             InitializeComponent();
@@ -29,7 +32,30 @@ namespace GameEngineEditor
         private void onMainWindowLoaded(object sender, RoutedEventArgs e)
         {
             Loaded -= onMainWindowLoaded;
+            GetEnginePath();
             openProjectBrowserDialog();
+        }
+
+        private void GetEnginePath()
+        {
+            var enginePath = Environment.GetEnvironmentVariable("TGE_ENGINE", EnvironmentVariableTarget.User);
+            if(enginePath == null || !Directory.Exists(System.IO.Path.Combine(enginePath, @"GameEngine\EngineAPI")))
+            {
+                var dlg = new EnginePathDialog();
+                if(dlg.ShowDialog() == true)
+                {
+                    TgePath = dlg.TgePath;
+                    Environment.SetEnvironmentVariable("TGE_ENGINE", TgePath.ToUpper(), EnvironmentVariableTarget.User);
+                }
+                else
+                {
+                    Application.Current.Shutdown();
+                }
+            }
+            else
+            {
+                TgePath = enginePath;
+            }
         }
 
         private void onMainWindowClosing(object? sender, CancelEventArgs e)

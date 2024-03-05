@@ -5,25 +5,49 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameEngineEditor.gameProject"
         mc:Ignorable="d" ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
-        Title="Test Game Engine" Height="600" Width="1000">
+        Title="Test Game Engine" Height="600" Width="1000"
+        Style="{StaticResource DialogBoxStyle}">
+    <Window.Resources>
+        <Style TargetType="{x:Type ToggleButton}">
+            <Setter Property="FontSize" Value="32"/>
+            <Setter Property="FontFamily" Value="Bahnschrift condensed"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource Editor.Disabled.FontBrush}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <TextBlock Text="{TemplateBinding Button.Content}" Style="{x:Null}">
+                            <TextBlock.Effect>
+                                <DropShadowEffect BlurRadius="2" ShadowDepth="1" Opacity="0.6"/>
+                            </TextBlock.Effect>
+                        </TextBlock>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="{StaticResource Editor.Window.GrayBrush4}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                    <Condition Property="IsChecked" Value="False"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Foreground" Value="{StaticResource Editor.FontBrush}"/>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
     <Window.Background>
         <ImageBrush ImageSource="assets/backgroundProjectBrowser.png"/>
     </Window.Background>
-
-    <Window.Resources>
-        <Style x:Key="ToggleButtonStyle" TargetType="ToggleButton">
-            <Setter Property="Background" Value="LightGray"/>
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="BorderBrush" Value="Black"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Style.Triggers>
-                <Trigger Property="IsChecked" Value="True">
-                    <Setter Property="Background" Value="DarkGray"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Resources>
-    
 
     <Grid>
         <Grid.RowDefinitions>
@@ -31,31 +55,12 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" Grid.Row="0"  HorizontalAlignment="Center" Margin="20">
-            <ToggleButton Content="Open Project" x:Name="openProjectButton" FontSize="32"
-              Click="onToggleButton_click"
-              Style="{StaticResource ToggleButtonStyle}">
-                <ToggleButton.Template>
-                    <ControlTemplate TargetType="ToggleButton">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </ToggleButton.Template>
+            <ToggleButton Content="OPEN PROJECT" x:Name="openProjectButton" FontSize="32"
+              Click="onToggleButton_click">
             </ToggleButton>
 
-            <ToggleButton Content="New Project" x:Name="newProjectButton" FontSize="32" Margin="30,0,0,0"
-                          Click="onToggleButton_click" Style="{StaticResource ToggleButtonStyle}">
-                <ToggleButton.Template>
-                    <ControlTemplate TargetType="ToggleButton">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </ToggleButton.Template>
+            <ToggleButton Content="NEW PROJECT" x:Name="newProjectButton" FontSize="32" Margin="30,0,0,0"
+                          Click="onToggleButton_click">
             </ToggleButton>
             
         </StackPanel>

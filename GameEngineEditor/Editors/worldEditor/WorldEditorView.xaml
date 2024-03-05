@@ -5,11 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GameEngineEditor.Editors"
              xmlns:utl="clr-namespace:GameEngineEditor.utilities"
+             xmlns:ctrl="clr-namespace:GameEngineEditor.utilities.Controls"
              xmlns:proj="clr-namespace:GameEngineEditor.gameProject"
-             mc:Ignorable="d" Background="White"
+             mc:Ignorable="d"
              Focusable="True"
              d:DataContext="{d:DesignInstance Type = proj:Project, IsDesignTimeCreatable = True}"
-             d:DesignHeight="540" d:DesignWidth="960">
+             d:DesignHeight="540" d:DesignWidth="960"
+             Background="Transparent">
+    
+    <UserControl.Resources>
+        
+    </UserControl.Resources>
 
     <UserControl.InputBindings>
         <KeyBinding Command="{Binding undoCommand}" Key="Z" Modifiers="Ctrl"/>
@@ -36,8 +42,23 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
-                <TabControl Grid.Row="1">
+                <Border Background="{StaticResource Editor.Selected.BackgroundBrush}">
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                    <ctrl:NumberBox VerticalAlignment="Center" Value="0" Foreground="{StaticResource Editor.FontBrush}"/>
+                        <ctrl:VectorBox X="0" Y="1" Z="2" W="3" VectorType="Vector2"/>
+                        <ctrl:VectorBox X="0" Y="1" Z="2" W="3" VectorType="Vector3"/>
+                        <ctrl:VectorBox X="0" Y="1" Z="2" W="3" VectorType="Vector4"/>
+
+                        <ctrl:VectorBox X="0" Y="1" Z="2" W="3" VectorType="Vector2" Orientation="Vertical"/>
+                        <ctrl:VectorBox X="0" Y="1" Z="2" W="3" VectorType="Vector3" Orientation="Vertical"/>
+                        <ctrl:VectorBox X="0" Y="1" Z="2" W="3" VectorType="Vector4" Orientation="Vertical"/>
+
+                        <ctrl:ScalarBox Value="0" Multiplier="10"/>
+                    </StackPanel>
+                </Border>
+                <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="Transparent"/>
+                <TabControl Grid.Row="1" Background="{StaticResource Editor.Window.GrayBrush2}"
+                            Margin="0,5,0,0">
                     <TabItem Header = "History">
                         <utl:undoRedoView DataContext="{Binding UndoRedo}"/>        
                     </TabItem>
@@ -47,15 +68,16 @@
                 </TabControl>
                 
             </Grid>
-            <GridSplitter Grid.Column="1" HorizontalAlignment="left" VerticalAlignment="Stretch" Width="5"/>
+            <GridSplitter Grid.Column="1" HorizontalAlignment="left" VerticalAlignment="Stretch" Width="5" Background="Transparent"/>
             <Grid   Grid.Column="1" Margin="5,0,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="5"/>
-                <local:ProjectObjectsView/>
-                <local:gameEntityView Grid.Row ="1"/>
+                <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="5" Background="Transparent"/>
+                <local:ProjectObjectsView Background="{StaticResource Editor.Window.GrayBrush3}"/>
+                <local:gameEntityView Background="{StaticResource Editor.Window.GrayBrush3}" Grid.Row ="1"
+                                      Margin="0,5,0,0"/>
                 
             </Grid>
         </Grid>

@@ -10,7 +10,7 @@ namespace tge::transform
 		utl::vector<math::v3>scales;
 	} 
 
-	component create_transform(const init_info& info, game_entity::entity e)
+	component create(init_info info, game_entity::entity e)
 	{
 		assert(e.is_valid());
 		const id::id_type entity_index = id::index(e.get_id());
@@ -31,7 +31,7 @@ namespace tge::transform
 		return component(transform_id((id::id_type)positions.size() - 1)); 
 	}
 
-	void remove_transform(component c)
+	void remove(component c)
 	{
 		assert(c.is_valid());
 	}

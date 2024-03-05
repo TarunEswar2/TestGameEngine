@@ -31,6 +31,7 @@ namespace GameEngineEditor.gameProject
         public string IconFilePath {  get; set; }
         public string ScreenshotFilePath { get; set;}
         public string ProjectFilePath { get; set;}
+        public string TemplatePath {  get; set;}
     }
 
     class newProject : viewModelBase
@@ -56,6 +57,7 @@ namespace GameEngineEditor.gameProject
                     template.ScreenshotFilePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(file), "screenshot.png"));
                     template.Screenshot = File.ReadAllBytes(template.ScreenshotFilePath);
                     template.ProjectFilePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(file), template.projectFile));
+                    template.TemplatePath = Path.GetDirectoryName(file);
                     _projectTemplates.Add(template);
                 }
                 validateDirectoryPath();
@@ -197,6 +199,8 @@ namespace GameEngineEditor.gameProject
                 projectXml = string.Format(projectXml, ProjectName, ProjectPath);
                 var projectPath = Path.GetFullPath(Path.Combine(path, $"{ProjectName}{Project.Extention}"));
                 File.WriteAllText(projectPath, projectXml);
+
+                CreateProjectMSVCSolution(template, path);
                 return path;
             }
             catch(Exception ex)
@@ -205,6 +209,29 @@ namespace GameEngineEditor.gameProject
                 Logger.Log(MessageType.Error, $"Failed to create {ProjectName}");
                 throw;
             }
+        }
+
+        private void CreateProjectMSVCSolution(projectTemplate template, string projectPath)
+        {
+            Debug.Assert(File.Exists(Path.Combine(template.TemplatePath, "MSVCSolution.txt")));
+
+            Debug.Assert(File.Exists(Path.Combine(template.TemplatePath, "MSVCProject.txt")));
+
+            string engineAPIPath = Path.Combine(MainWindow.TgePath, @"GameEngine\EngineAPI");
+            Debug.Assert(Directory.Exists(engineAPIPath));
+
+            var _0 = ProjectName;
+            var _1 = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
+            var _2 = engineAPIPath;
+            var _3 = MainWindow.TgePath;
+
+            var solution = File.ReadAllText(Path.Combine(template.TemplatePath, "MSVCSolution.txt"));
+            solution = string.Format(solution, _0, _1, "{" + Guid.NewGuid().ToString().ToUpper() + "}");//third formatting is the solution GUID            
+            File.WriteAllText(Path.GetFullPath(Path.Combine(projectPath, $"{_0}.sln")), solution);                         
+
+            var project = File.ReadAllText(Path.Combine(template.TemplatePath, "MSVCProject.txt"));
+            project = string.Format(project, _0, _1, _2, _3);            
+            File.WriteAllText(Path.GetFullPath(Path.Combine(projectPath, @$"GameCode/{_0}.vcxproj")), project);             
         }
     }
 }

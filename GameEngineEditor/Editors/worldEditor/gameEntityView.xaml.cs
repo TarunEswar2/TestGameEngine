@@ -55,18 +55,19 @@ namespace GameEngineEditor.Editors
 
         private void onName_TextBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-        _undoAction = getRenameAction();
+            _propertyName =string.Empty;
+            _undoAction = getRenameAction();
         }
 
         private void onName_TextBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-        if(_propertyName == nameof(MSEntity.Name) && _undoAction != null)
-        {
-        _redoAction = getRenameAction();
-        Project.UndoRedo.add(new undoRedoAction(_undoAction, _redoAction, "Rename game entity/entities"));
-        _propertyName = null;
-        }
-        _undoAction = null;
+            if(_propertyName == nameof(MSEntity.Name) && _undoAction != null)
+            {
+            _redoAction = getRenameAction();
+            Project.UndoRedo.add(new undoRedoAction(_undoAction, _redoAction, "Rename game entity/entities"));
+            _propertyName = null;
+            }
+            _undoAction = null;
         }
 
         private Action getIsEnableAction()

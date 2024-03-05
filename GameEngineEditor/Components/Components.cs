@@ -17,6 +17,7 @@ namespace GameEngineEditor.Components
     [DataContract]
     abstract class Components : viewModelBase
     {
+        public abstract IMSComponents GetMultiSelectionComponent(MSEntity msEntity);
         [DataMember]
         public gameEntitiy owner { get; private set; }
 
@@ -29,6 +30,24 @@ namespace GameEngineEditor.Components
 
     abstract class MScomponent<T> : viewModelBase , IMSComponents where T : Components
     {
+        private bool _enableUpdates = true;
+        public List<T> SelectedComponents { get;}
+    
+        public MScomponent(MSEntity msEntity)
+        {
+            Debug.Assert(msEntity?.SelectedEntites?.Any() == true);
+            SelectedComponents = msEntity.SelectedEntites.Select(entity=> entity.GetComponent<T>()).ToList();
+            PropertyChanged += (s, e) => { if (_enableUpdates) UpdateComponents(e.PropertyName); };
+        }
 
+        protected abstract bool UpdateComponents(string propertyName);
+        protected abstract bool UpdateMSComponent();
+        
+        public void Refresh()
+        {
+            _enableUpdates = false;
+            UpdateMSComponent();
+            _enableUpdates = true;
+        }
     }
 }

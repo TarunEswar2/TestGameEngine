@@ -32,8 +32,6 @@ namespace GameEngineEditor.Editors
         {
             Loaded -= onWorldEditorLoaded;
             Focus();
-
-            ((INotifyCollectionChanged)Project.UndoRedo.UndoList).CollectionChanged += (s, e) => Focus();
         }
     }
 }

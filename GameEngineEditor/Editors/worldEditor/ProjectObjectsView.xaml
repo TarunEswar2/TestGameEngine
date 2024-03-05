@@ -7,7 +7,8 @@
              xmlns:proj="clr-namespace:GameEngineEditor.gameProject"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type = proj:Project, IsDesignTimeCreatable = True}"
-    d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="Transparent">
     
     <Grid>
         <Grid.RowDefinitions>
@@ -32,7 +33,7 @@
                             <Expander.Header>
                                 <Grid>
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Name}"/>
+                                        <TextBlock Text="{Binding Name}" Style="{StaticResource LightTextBlockStyle}"/>
                                         <Button Content="Remove"
                                                 Command="{Binding DataContext.removeSceneCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                 CommandParameter="{Binding}" Margin="20,0" Focusable="False"/>

@@ -6,8 +6,9 @@
         xmlns:local="clr-namespace:GameEngineEditor"
         xmlns:editors="clr-namespace:GameEngineEditor.Editors"
         mc:Ignorable="d"
-        Title="TestGameEngine Editor" Height="540" Width="960">
-    
+        Title="TestGameEngine Editor" Height="540" Width="960"
+        Style="{StaticResource GameEditorWindowStyle}">
+
     <Grid>
         <editors:WorldEditorView/>
     </Grid>

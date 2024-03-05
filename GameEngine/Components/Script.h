@@ -1,14 +1,12 @@
 #pragma once
 #include"ComponentsCommon.h"
 
-namespace tge::transform {
+namespace tge::script {
 	struct init_info
 	{
-		f32 position[3]{};
-		f32 rotation[4]{};
-		f32 scale[3]{ 1.f,1.f,1.f };
+		detail::script_creator script_creator;//pointer to create_script function
 	};
 
 	component create(init_info info, game_entity::entity e);
-	void remove(component c);
+	void remove(component id);
 }

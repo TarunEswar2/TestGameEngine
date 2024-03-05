@@ -45,9 +45,10 @@ namespace GameEngineEditor.Components
                         EntityID = GameEngineAPI.CreateGameEntity(this);
                         Debug.Assert(ID.isValid(_entityID));
                     }
-                    else
+                    else if(ID.isValid(EntityID))
                     {
                         GameEngineAPI.RemoveGameEntity(this);
+                        EntityID= ID.INVALID_ID;
                     }
                     onPropertyChanged(nameof(IsActive));
                 }
@@ -95,7 +96,7 @@ namespace GameEngineEditor.Components
             Debug.Assert(scene != null);
             parentScene = scene;
             _components.Add(new Transform(this));
-            OnDeserialized(new StreamingContext());
+            OnDeserialized(new StreamingContext());//only this is called when the object is deserialized and not called when the object is noramlly created
         }
 
         public Components GetComponent(Type type) => Components.FirstOrDefault(c => c.GetType() == type);
@@ -160,7 +161,25 @@ namespace GameEngineEditor.Components
         {
             _enableUpdates = false;
             UpdateMSGameEntites();
+            MakeComponentList();
             _enableUpdates = true;
+        }
+
+        private void MakeComponentList()
+        {
+            _components.Clear();
+            var firstEntity = SelectedEntites.FirstOrDefault();
+            if (firstEntity == null) return;
+
+            foreach(var component in firstEntity.Components)
+            {
+                var type = component.GetType();
+                if(!SelectedEntites.Skip(1).Any(enitty => enitty.GetComponent(type) == null))
+                {
+                    Debug.Assert(Components.FirstOrDefault(x => x.GetType() == type) == null);
+                    _components.Add(component.GetMultiSelectionComponent(this));
+                }
+            }
         }
 
         protected virtual bool UpdateMSGameEntites()
@@ -182,49 +201,28 @@ namespace GameEngineEditor.Components
             return false;
         }
 
-        public static float? GetMixedValue(List<gameEntitiy> entities, Func<gameEntitiy, float> getProperty)
+        public static float? GetMixedValue<T>(List<T> objects, Func<T, float> getProperty)
         {
-            var value = getProperty(entities.First());
-            foreach (var entity in entities.Skip(1))
-            {
-                if (!value.isTheSameAs(getProperty(entity)))
-                {
-                    return null;
-                }
-            }
-
-            return value;
+            var value = getProperty(objects.First());
+            return objects.Skip(1).Any(x => !getProperty(x).isTheSameAs(value))? (float?)null : value;
         }
 
-        public static bool? GetMixedValue(List<gameEntitiy> entities, Func<gameEntitiy, bool> getProperty)
+        public static bool? GetMixedValue<T>(List<T> objects, Func<T, bool> getProperty)
         {
-            var value = getProperty(entities.First());
-            foreach (var entity in entities.Skip(1))
-            {
-                if (value != getProperty(entity))
-                {
-                    return null;
-                }
-            }
-
-            return value;
+            var value = getProperty(objects.First());
+            return objects.Skip(1).Any(x => value != getProperty(x)) ? (bool?)null : value; 
         }
 
-        public static string? GetMixedValue(List<gameEntitiy> entities, Func<gameEntitiy, string> getProperty)
+        public static string? GetMixedValue<T>(List<T> objects, Func<T, string> getProperty)
         {
-            var value = getProperty(entities.First());
-            foreach (var entity in entities.Skip(1))
-            {
-                if (value != getProperty(entity))
-                {
-                    return null;
-                }
-            }
-
-            return value;
+            var value = getProperty(objects.First());
+            return objects.Skip(1).Any(x => value != getProperty(x)) ? null : value;
         }
 
-
+        public T GetMSComponent<T>() where T : IMSComponents
+        {
+            return (T)Components.FirstOrDefault(x => x.GetType() == typeof(T));
+        }
     }
 
     class MSGameEntity : MSEntity
