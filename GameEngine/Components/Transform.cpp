@@ -28,7 +28,7 @@ namespace tge::transform
 			positions.emplace_back(info.position);
 			scales.emplace_back(info.scale);
 		}
-		return component(transform_id((id::id_type)positions.size() - 1)); 
+		return component(transform_id( (id::id_type)positions.size() - 1 ));
 	}
 
 	void remove(component c)

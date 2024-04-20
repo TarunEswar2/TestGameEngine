@@ -13,6 +13,12 @@ namespace GameEngineEditor.utilities.Controls
 
     internal class VectorBox : Control
     {
+        public string X
+        {
+            get => (string)GetValue(XProperty);
+            set => SetValue(XProperty, value);
+        }
+
         public static readonly DependencyProperty XProperty = DependencyProperty.Register(
                                             nameof(X),                 // The name of the property
                                             typeof(string),                // The type of the property
@@ -20,11 +26,7 @@ namespace GameEngineEditor.utilities.Controls
                                             new FrameworkPropertyMetadata(
                                             null,                       // The default value of the property
                                             FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));  // Metadata options)
-        public string X
-        {
-            get => (string)GetValue(XProperty);
-            set => SetValue(XProperty, value);
-        }
+       
 
         public static readonly DependencyProperty YProperty = DependencyProperty.Register(
                                             nameof(Y),                 // The name of the property

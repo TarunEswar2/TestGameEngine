@@ -94,7 +94,5 @@ namespace GameEngineEditor.Dictionaries
             var window = ((Window)((FrameworkElement)sender).TemplatedParent);
             window.WindowState = WindowState.Minimized;
         }
-
-        
     }
 }

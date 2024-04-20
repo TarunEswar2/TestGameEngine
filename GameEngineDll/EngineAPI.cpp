@@ -1,70 +1,35 @@
-//extern "C" disables name amngling which is used in C++ and treats it like it has been written in C
-//__delcspec(dllecport) exports it to the outside world
-#ifndef EDITOR_INTERFACE
-#define EDITOR_INTERFACE extern "C" __declspec(dllexport)
+#include"Common.h"
+#include"CommonHeaders.h"
+
+#ifndef WIN32_MEAN_AND_LEAN
+#define WIN32_MEAN_AND_LEAN
 #endif
 
-#include "CommonHeaders.h"
-#include "id.h"
-#include "../GameEngine/Components/Entity.h"
-#include "../GameEngine/Components/Transform.h"
-
-using namespace tge;
+#include<Windows.h>
 
 namespace {
-	struct transform_component
-	{
-		f32 position[3];
-		f32 rotation[3];//euler angles but engine uses quaternion rotation
-		f32 scale[3];
+	HMODULE game_code_dll = nullptr;
+}//anannymous namesapce
 
-		transform::init_info to_init_info()
-		{
-			using namespace DirectX;
-			transform::init_info info{};
+EDITOR_INTERFACE u32
+LoadGameCodeDll(const char* dll_path)
+{
+	if (game_code_dll) return FALSE;
+	game_code_dll = LoadLibraryA(dll_path); //ascii version not unicode as we are using char array
+	assert(game_code_dll);
 
-			memcpy(&info.position[0], &position[0], sizeof(f32) * _countof(position));
-			memcpy(&info.scale[0], &scale[0], sizeof(f32) * _countof(scale));
-
-			XMFLOAT3A rot { &rotation[0] };
-			XMVECTOR quat{ XMQuaternionRotationRollPitchYawFromVector(XMLoadFloat3A(&rot)) };
-			XMFLOAT4A rot_quat{};
-			XMStoreFloat4A(&rot_quat, quat);
-			memcpy(&info.rotation[0], &rot_quat.x, sizeof(f32) * _countof(info.rotation));
-
-			return info;
-		}
-	};
-	
-	struct game_entity_descriptor
-	{
-		transform_component transform;
-	};
-
-	game_entity::entity entity_from_id(id::id_type id)
-	{
-		return game_entity::entity{ (game_entity::entity_id)id };
-	}
+	return game_code_dll ? TRUE:FALSE;
 }
 
-EDITOR_INTERFACE id::id_type 
-CreateGameEntity(game_entity_descriptor* e)
+EDITOR_INTERFACE u32
+UnloadGameCodeDll()
 {
-	assert(e);
-	game_entity_descriptor& desc = *e;
-	transform::init_info transform_info = desc.transform.to_init_info();
-	game_entity::entity_info entity_info
-	{
-		&transform_info
-	};
-	return game_entity::create(entity_info).get_id();
-}
-
-EDITOR_INTERFACE void 
-RemoveGameEntity(id::id_type id)
-{
-	assert(id::isvalid(id));
-	game_entity::remove((game_entity::entity_id)id);
+	if (!game_code_dll) return FALSE;
+	assert(game_code_dll);
+	int result= FreeLibrary(game_code_dll);
+	assert(result);
+	game_code_dll = nullptr;
+	return TRUE;
 }
 
 

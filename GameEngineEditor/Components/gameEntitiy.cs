@@ -42,12 +42,12 @@ namespace GameEngineEditor.Components
                     _isActive = value;
                     if (_isActive)
                     {
-                        EntityID = GameEngineAPI.CreateGameEntity(this);
+                        EntityID = GameEngineAPI.EntityAPI.CreateGameEntity(this);
                         Debug.Assert(ID.isValid(_entityID));
                     }
                     else if(ID.isValid(EntityID))
                     {
-                        GameEngineAPI.RemoveGameEntity(this);
+                        GameEngineAPI.EntityAPI.RemoveGameEntity(this);
                         EntityID= ID.INVALID_ID;
                     }
                     onPropertyChanged(nameof(IsActive));

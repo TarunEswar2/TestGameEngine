@@ -196,7 +196,7 @@ namespace GameEngineEditor.gameProject
                 File.Copy(template.ScreenshotFilePath, Path.GetFullPath(Path.Combine(dirinfo.FullName, "screenshot.png")));
 
                 var projectXml = File.ReadAllText(template.ProjectFilePath);
-                projectXml = string.Format(projectXml, ProjectName, ProjectPath);
+                projectXml = string.Format(projectXml, ProjectName, path);
                 var projectPath = Path.GetFullPath(Path.Combine(path, $"{ProjectName}{Project.Extention}"));
                 File.WriteAllText(projectPath, projectXml);
 

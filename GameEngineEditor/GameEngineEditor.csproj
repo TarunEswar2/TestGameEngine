@@ -9,6 +9,8 @@
     <PlatformTarget>x64</PlatformTarget>
     <BaseOutputPath>C:\Users\Tarun\Desktop\Projects\TestGameEngine\x64</BaseOutputPath>
 	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	<Configurations>Debug;Release;DebugEditor;ReleaseEditor</Configurations>
+	<Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

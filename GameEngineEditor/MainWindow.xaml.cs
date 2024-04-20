@@ -20,7 +20,7 @@ namespace GameEngineEditor
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static string TgePath { get; private set; } = "C:\\Users\\Tarun\\Desktop\\Projects\\TestGameEngine";
+        public static string TgePath { get; private set; }
 
         public MainWindow()
         {

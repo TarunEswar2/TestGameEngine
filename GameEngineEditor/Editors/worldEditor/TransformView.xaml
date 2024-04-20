@@ -38,7 +38,7 @@
                            PreviewMouseLeftButtonUp="onRotation_VectorBox_PreviewMouse_LBU"
                            LostKeyboardFocus="OnRotation_VectorBox_LostKeyBoardFocus"/>
 
-            <TextBlock Text="Position" Grid.Column="0" Grid.Row="2"/>
+            <TextBlock Text="Scale" Grid.Column="0" Grid.Row="2"/>
             <utl:VectorBox X="{Binding ScaleX}" Y="{Binding ScaleY}" Z="{Binding ScaleZ}" Grid.Column="1" Grid.Row="2"
                             PreviewMouseLeftButtonDown="onScale_VectorBox_PreviewMouse_LBD"
                             PreviewMouseLeftButtonUp="onScale_VectorBox_PreviewMouse_LBU"

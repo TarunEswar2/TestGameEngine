@@ -6,7 +6,7 @@ namespace tge::id
 	using id_type = u32;
 
 	namespace detail {
-		constexpr u32 generation_bits{ 8 };
+		constexpr u32 generation_bits= 8;
 		constexpr u32 index_bits(sizeof(id_type) * 8 - generation_bits); //sizeof is in bytes
 		constexpr id_type index_mask{ (id_type{1} << index_bits) - 1 };
 		constexpr id_type generaton_mask{ (id_type{1} << generation_bits) - 1 };
