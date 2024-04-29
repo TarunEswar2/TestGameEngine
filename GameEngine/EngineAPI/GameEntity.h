@@ -38,9 +38,15 @@ namespace tge {
 		namespace detail
 		{
 			using script_ptr = std::unique_ptr<entity_script>;
-			using script_creator = script_ptr(*)(game_entity::entity entity);//pointer to a function
+			using script_creator = script_ptr(*)(game_entity::entity entity);//pointer to a function that take entity as argument and returns a script pointer
 			using string_hash = std::hash<std::string>;
 			u8 register_script(size_t, script_creator);
+#ifdef USE_WITH_EDITOR
+			extern "C" _declspec(dllexport)
+#endif // 
+
+			script_creator get_script_creator(size_t tag);
+
 			//function pointer to create a new script ,returns unique pointer of script_ptr
 			template<class script_class>
 			script_ptr create_script(game_entity::entity entity)
@@ -48,16 +54,30 @@ namespace tge {
 				assert(entity.is_valid());
 				return std::make_unique<script_class>(entity); //returns unique_pointer<script_class>
 			}
+
+#ifdef USE_WITH_EDITOR
+			u8 add_script_name(const char* name);
+
 #define REGISTER_SCRIPT(TYPE)\
-	class TYPE;\
 	namespace {\
 	u8 _reg_##TYPE = \
 	tge::script::detail::register_script\
 	(tge::script::detail::string_hash()(#TYPE), &tge::script::detail::create_script<TYPE>);\
-	}
+	const u8 _name_##TYPE\
+	{tge::script::detail::add_script_name(#TYPE)};\
+	}\
+
+#else
+			//forward declaration of class A
+			// inside the ananymous namespace we have a variable _reg_##Type type is concatenated to _reg_ and calls register script 
+#define REGISTER_SCRIPT(TYPE)\
+	namespace {\
+	u8 _reg_##TYPE = \
+	tge::script::detail::register_script\
+	(tge::script::detail::string_hash()(#TYPE), &tge::script::detail::create_script<TYPE>);\
+	}\
+
+#endif //USE_WITH_EDITOR
 		}
-
-
 	}
-
-}
+};

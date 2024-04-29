@@ -225,14 +225,16 @@ namespace GameEngineEditor.GameDev
             if(_vsInstance == null) return false;
             
             bool result = false;
+            bool tryagian = true;
 
-            for (int i = 0; i < 3; ++i)
+            for (int i = 0; i < 3 && tryagian; ++i)
             {
                 try
                 {
                     result = (_vsInstance != null) &&
                         (_vsInstance.Debugger.CurrentProgram != null) ||
                         (_vsInstance.Debugger.CurrentMode == EnvDTE.dbgDebugMode.dbgRunMode);
+                    tryagian = false;
                 }
                 catch (Exception ex)
                 {
@@ -242,6 +244,22 @@ namespace GameEngineEditor.GameDev
             }
 
             return result;
+        }
+
+        public static void Run(Project project, string configName, bool debug)
+        {
+            if(_vsInstance != null && !IsDebugging() && BuildDone && BuildSucceeded)
+            {
+                _vsInstance.ExecuteCommand(debug ? "Debug.Start" : "Debug.StartWithoutDebugging");
+            }
+        }
+
+        public static void Stop()
+        {
+            if(_vsInstance != null && IsDebugging())
+            {
+                _vsInstance.ExecuteCommand("Debug.StopDebugging");
+            }
         }
     }
 }

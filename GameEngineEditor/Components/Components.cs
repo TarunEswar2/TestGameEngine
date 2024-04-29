@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -18,6 +19,7 @@ namespace GameEngineEditor.Components
     abstract class Components : viewModelBase
     {
         public abstract IMSComponents GetMultiSelectionComponent(MSEntity msEntity);
+        public abstract void WrtieToBinary(BinaryWriter bw);
         [DataMember]
         public gameEntitiy owner { get; private set; }
 

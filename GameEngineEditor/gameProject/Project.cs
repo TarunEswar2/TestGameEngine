@@ -1,9 +1,11 @@
-﻿using GameEngineEditor.DllWrapper;
+﻿using GameEngineEditor.Components;
+using GameEngineEditor.DllWrapper;
 using GameEngineEditor.GameDev;
 using GameEngineEditor.utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -69,6 +71,10 @@ namespace GameEngineEditor.gameProject
         public ICommand redoCommand { get; private set; }
         public ICommand saveCommand { get; private set; }
         public ICommand buildCommand { get; private set; }
+        public ICommand debugStartCommand { get; private set; }
+        public ICommand debugStartWithoutDebuggingCommand { get; private set; }
+        public ICommand debugStopCommand { get; private set; }
+
         public static undoRedo UndoRedo { get; } = new undoRedo();
         private void SetCommands()
         {
@@ -101,6 +107,9 @@ namespace GameEngineEditor.gameProject
             redoCommand = new RelayCommand<object>(x => UndoRedo.redo(), x => UndoRedo.RedoList.Any());
             saveCommand = new RelayCommand<object>(x => Save(this));
             buildCommand = new RelayCommand<bool>(async x => await BuildGameCodeDll(x), x => !VisualStudio.IsDebugging() && VisualStudio.BuildDone);
+            debugStartCommand = new RelayCommand<object>(async x=> await RunGame(true), x => !VisualStudio.IsDebugging() && VisualStudio.BuildDone);
+            debugStartWithoutDebuggingCommand = new RelayCommand<object>(async x=> await RunGame(false), x => !VisualStudio.IsDebugging() && VisualStudio.BuildDone);
+            debugStopCommand = new RelayCommand<object>(async x=> await StopGame(), x => VisualStudio.IsDebugging());
 
             onPropertyChanged(nameof(addSceneCommand));
             onPropertyChanged(nameof(removeSceneCommand));
@@ -108,6 +117,9 @@ namespace GameEngineEditor.gameProject
             onPropertyChanged(nameof(redoCommand));
             onPropertyChanged(nameof(saveCommand));
             onPropertyChanged(nameof(buildCommand));
+            onPropertyChanged(nameof(debugStartCommand));
+            onPropertyChanged(nameof(debugStartWithoutDebuggingCommand));
+            onPropertyChanged(nameof(debugStopCommand));
         }
 
         private static string GetConfigurationName(BuildConfiguration config) => _buildConfigurationNames[(int)config];
@@ -129,6 +141,20 @@ namespace GameEngineEditor.gameProject
 
         public BuildConfiguration StandAloneBuildConfiguration => BuildConfig == 0 ? BuildConfiguration.Debug : BuildConfiguration.Release;
         public BuildConfiguration DllBuildConfiguration => BuildConfig == 0 ? BuildConfiguration.DebugEditor : BuildConfiguration.ReleaseEditor;
+
+        private string[] _availableScripts;
+        public string[] AvailableScripts
+        {
+            get => _availableScripts;
+            set
+            {
+                if(_availableScripts != value)
+                {
+                    _availableScripts = value;
+                    onPropertyChanged(nameof(AvailableScripts));
+                }
+            }
+        }
 
         public Project(string name, string path) 
         { 
@@ -161,6 +187,7 @@ namespace GameEngineEditor.gameProject
             }
 
             ActiveScene = Scenes.FirstOrDefault(x => x.IsActive);
+            Debug.Assert(ActiveScene != null);
             
             await BuildGameCodeDll(false);//build the current game code
 
@@ -192,8 +219,11 @@ namespace GameEngineEditor.gameProject
             var configName = GetConfigurationName(DllBuildConfiguration);
             var dll = $@"{Path}x64\{configName}\{Name}.dll";
 
+            AvailableScripts = null;
             if(File.Exists(dll) && GameEngineAPI.LoadGameCodeDll(dll) != 0)
             {
+                AvailableScripts = GameEngineAPI.GetScriptNames();
+                ActiveScene.GameEntities.Where(x => x.GetComponent<Script>() != null).ToList().ForEach(x => x.IsActive = true);
                 Logger.Log(MessageType.Info, "Game Code DLL loaded succesfully");
             }
             else
@@ -204,7 +234,8 @@ namespace GameEngineEditor.gameProject
 
         private void UnloadGameCodeDll()
         {
-            Debug.WriteLine("entered unloading");
+            var UpdateScenes = ActiveScene.GameEntities.Where(x => x.GetComponent<Script>() != null).ToList();
+            UpdateScenes.ForEach(x => x.IsActive = false);
             if(GameEngineAPI.UnloadGameCodeDll() != 0)
             {
                 Logger.Log(MessageType.Info, "Game code Dll unloaded successfully");
@@ -215,8 +246,43 @@ namespace GameEngineEditor.gameProject
             }
         }
 
+        private void SaveToBinary()
+        {
+            var configName = GetConfigurationName(StandAloneBuildConfiguration);
+            var bin = $@"{Path}x64\{configName}\game.bin";
+
+            using (var bw = new BinaryWriter(File.Open(bin,FileMode.Create,FileAccess.Write))) 
+            {
+                bw.Write(ActiveScene.GameEntities.Count);
+                foreach(var entity in ActiveScene.GameEntities)
+                {
+                    bw.Write(0);
+                    bw.Write(entity.Components.Count);
+                    foreach(var component in entity.Components)
+                    {
+                        bw.Write((int)component.ToEnumType());
+                        component.WrtieToBinary(bw);
+                    }
+                }
+            }
+        }
+
+        private async Task RunGame(bool debug)
+        {
+            var configName = GetConfigurationName(StandAloneBuildConfiguration);
+            await Task.Run(() => VisualStudio.BuildSolution(this, configName, debug));
+            if(VisualStudio.BuildSucceeded)
+            {
+                SaveToBinary();
+                await Task.Run(() => VisualStudio.Run(this, configName, debug));
+            }
+        }
+
+        private async Task StopGame() => await Task.Run(() => VisualStudio.Stop());
+
         public void unLoad()
         {
+            UnloadGameCodeDll();
             VisualStudio.closeVisualStudio();
             UndoRedo.Reset();
         }
@@ -231,7 +297,5 @@ namespace GameEngineEditor.gameProject
             Debug.Assert(_scenes.Contains(scene));
             _scenes.Remove(scene);
         }
-
-        
     }
 }

@@ -17,6 +17,7 @@ namespace GameEngineEditor.Components
 {
     [DataContract]
     [KnownType(typeof(Transform))]
+    [KnownType(typeof(Script))]
     class gameEntitiy : viewModelBase
     {
         private int _entityID = ID.INVALID_ID;
@@ -101,6 +102,37 @@ namespace GameEngineEditor.Components
 
         public Components GetComponent(Type type) => Components.FirstOrDefault(c => c.GetType() == type);
         public T GetComponent<T>() where T : Components => GetComponent(typeof(T))  as T; //T : component T must derive from component or be component
+        
+        public bool AddComponents(Components component)
+        {
+            if (!Components.Any(x => x.GetType() == component.GetType()))
+            {
+                IsActive = false;
+                _components.Add(component);
+                IsActive = true;
+                return true;
+            }
+            Logger.Log(MessageType.Warning, $"Entity {Name} already has a component of type {component.GetType().Name}");
+            return false;
+        }
+
+        public void RemoveComponent(Components component)
+        {
+            Debug.Assert(component != null);
+            if(component is Transform)
+            {
+                Logger.Log(MessageType.Warning, "Cannot Remove transform component");
+                return;
+            }
+
+            if(_components.Contains(component))
+            {
+                IsActive= false;
+                _components.Remove(component);
+                IsActive= true;
+            }
+        }
+
         [OnDeserialized]
         private void OnDeserialized(StreamingContext context)
         {

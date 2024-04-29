@@ -9,4 +9,5 @@ namespace tge::script {
 
 	component create(init_info info, game_entity::entity e);
 	void remove(component id);
+	void update(float dt);
 }

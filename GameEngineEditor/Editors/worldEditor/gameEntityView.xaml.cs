@@ -3,11 +3,13 @@ using GameEngineEditor.gameProject;
 using GameEngineEditor.utilities;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -19,6 +21,19 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace GameEngineEditor.Editors
 {
+    public class NullableToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value is bool b && b== true;
+        }
+
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value is bool b && b == true;
+        }
+    }
     /// <summary>
     /// Interaction logic for gameEntityView.xaml
     /// </summary>
@@ -90,6 +105,55 @@ namespace GameEngineEditor.Editors
             var redoAction = getIsEnableAction();//remembers new state
             Project.UndoRedo.add(new undoRedoAction(undoAction, redoAction, 
                 vm.IsEnable == true? "Enabled game entity/entities" : "Disabled game entity/entities"));
+        }
+
+        private void onAddComponent_Button_PreviewMouse_LBD(object sender, MouseButtonEventArgs e)
+        {
+            var menu = FindResource("addComponentMenu") as ContextMenu;
+            var btn = sender as ToggleButton;
+            btn.IsChecked = true;
+            menu.Placement = PlacementMode.Bottom;
+            menu.PlacementTarget = btn;
+            menu.MinWidth = btn.ActualWidth;
+            menu.IsOpen = true;
+        }
+
+        private void AddComponent(ComponentType componentType, object data)
+        {
+            var creationFuntion = ComponentFactory.GetCreationFuntion(componentType);
+            var changedEntities = new List<(gameEntitiy entitiy, Components.Components component)>();
+            var vm = DataContext as MSEntity;
+
+            foreach(var entity in vm.SelectedEntites)
+            {
+                var component = creationFuntion(entity, data);
+                if(entity.AddComponents(component))
+                {
+                    changedEntities.Add((entity, component));
+                }
+            }
+
+            if(changedEntities.Any()) 
+            {
+                vm.Refresh();
+
+                Project.UndoRedo.add(new undoRedoAction(
+                () =>
+                {
+                    changedEntities.ForEach(x => x.entitiy.RemoveComponent(x.component));
+                    (DataContext as MSEntity).Refresh();
+                },
+                () =>
+                {
+                    changedEntities.ForEach(x => x.entitiy.AddComponents(x.component));
+                    (DataContext as MSEntity).Refresh(); 
+                }, $"Add Component : {componentType}"));
+            }
+        }
+
+        private void OnAddScriptComponent(object sender, RoutedEventArgs e)
+        {
+            AddComponent(ComponentType.Script, (sender as MenuItem).Header.ToString());
         }
     }
 }

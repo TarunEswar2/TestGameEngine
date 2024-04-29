@@ -63,13 +63,14 @@ namespace tge::game_entity{
 		const id::id_type index = id::index(id);
 		assert(is_alive(id));
 		transform::remove(transforms[index]);
-		transforms[index] = transform::component();//setting transform index as invalid
+		
 		if (scripts[index].is_valid())
 		{
 			script::remove(scripts[index]);
 			scripts[index] = {};//invalid ID
 		}
 
+		transforms[index] = transform::component();//setting transform index as invalid
 		free_ids.push_back(id);
 	}
 
@@ -79,7 +80,6 @@ namespace tge::game_entity{
 		const id::id_type index= id::index(id);
 
 		assert(index < generations.size());
-		assert(generations[index] == id::generation(id));
 		return generations[index] == id::generation(id) && transforms[index].is_valid();
 	}
 

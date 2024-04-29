@@ -20,3 +20,10 @@
 #include"PrimitiveTypes.h"
 #include"../Utility/Utility.h"
 #include"../Utility/MathTypes.h"
+#include"../Common/id.h"
+
+#ifdef _DEBUG
+#define DEBUG_OP(x) x
+#else
+#define DEBUG_OP(x)
+#endif
