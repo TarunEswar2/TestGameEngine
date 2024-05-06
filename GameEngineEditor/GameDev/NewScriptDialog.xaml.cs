@@ -178,6 +178,7 @@ namespace {1}{{
                 else break;
             }
         }
+
         private static string GetNamespaceFromProjectName()
         {
             var projectName = Project.Current.Name;

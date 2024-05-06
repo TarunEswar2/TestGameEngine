@@ -12,6 +12,7 @@
 
 #include<Windows.h>
 #include<crtdbg.h>
+
 #ifndef USE_WITH_EDITOR
 
 extern bool engine_initialize();
@@ -26,6 +27,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	if (engine_initialize())
 	{
+		
 		MSG msg{};
 		bool is_running = true;
 		while (is_running)

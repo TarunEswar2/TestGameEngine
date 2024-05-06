@@ -22,6 +22,7 @@ namespace tge::platform
 			u32 width() const;
 			u32 height() const;
 			bool is_closed() const;
+			void change_color(int red, int green, int blue);
 		private:
 			window_id _id;
 	};

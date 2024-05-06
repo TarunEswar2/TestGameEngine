@@ -1,4 +1,6 @@
-﻿using GameEngineEditor.GameDev;
+﻿using GameEngineEditor.Content;
+using GameEngineEditor.ContentToolsAPIStructs;
+using GameEngineEditor.GameDev;
 using GameEngineEditor.gameProject;
 using System;
 using System.Collections.Generic;
@@ -38,6 +40,12 @@ namespace GameEngineEditor.Editors
         private void onNewScript_Button_Click(object sender, RoutedEventArgs e)
         {
             new NewScriptDialog().ShowDialog();
+        }
+
+        private void OnCreatePrimitiveMesh_Button_Click(object sender, RoutedEventArgs e)
+        {
+            var dlg = new PrimitiveMeshDialog();
+            dlg.ShowDialog();
         }
     }
 }

@@ -16,7 +16,7 @@ namespace GameEngineEditor.GameDev
     {
         private static EnvDTE80.DTE2 _vsInstance = null;//used for visual studio core automation
         //16.0 denotes visual studio 2019
-        private static readonly string _progID = "VisualStudio.DTE.17.0"; //program ID to open a new instance of vs studio
+        private static readonly string _progID = "VisualStudio.DTE.17.0"; //program ID to open a new instance of vs studio 2022
 
         public static bool BuildSucceeded { get; private set; } = true;
         public static bool BuildDone { get; private set; } = true;
@@ -26,7 +26,6 @@ namespace GameEngineEditor.GameDev
         [DllImport("ole32.dll")]
         private static extern int GetRunningObjectTable(uint reserved, out IRunningObjectTable pprot);
         [DllImport("ole32.dll")]
-
         private static extern int CreateBindCtx(uint reserved, out IBindCtx ppbc);
 
         public static bool IsVSInstanceNull()

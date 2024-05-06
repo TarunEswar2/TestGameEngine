@@ -2,10 +2,11 @@
 #include "CommonHeaders.h"
 
 #ifdef _WIN64
-#ifndef WIN32_MEAN_AND_LEAN
-#define WIN32_MEAN_AND_LEAC
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
 #endif
 #include<Windows.h>
+#include<atlsafe.h>
 
 namespace tge::platform {
 	using window_proc = LRESULT(*)(HWND, UINT, WPARAM, LPARAM); //function pointer to window procedure to handle messages
@@ -20,6 +21,7 @@ namespace tge::platform {
 		s32 top{ 0 };
 		s32 width{ 960 };
 		s32 height{ 540 };
+		int r = 200, g = 32, b=50;
 	};
 }
 #endif // _WIN64

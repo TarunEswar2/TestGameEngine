@@ -139,6 +139,25 @@ namespace tge::platform
 			}
 		}
 
+		void change_color_window(window_id id, int r, int g, int b) {
+			HWND hwnd = get_from_id(id).hwnd;
+
+			// Create new custom brush
+			HBRUSH hCustomBrush = CreateSolidBrush(RGB(r, g, b));
+			assert(hCustomBrush != NULL);
+
+			// Get current background brush and delete it
+			HBRUSH hOldBrush = (HBRUSH)SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG_PTR)hCustomBrush);
+			if (hOldBrush != NULL && hOldBrush != GetStockObject(NULL_BRUSH)) {
+				DeleteObject(hOldBrush);
+			}
+
+			// Invalidate the window to trigger a repaint
+			InvalidateRect(hwnd, NULL, TRUE);
+		}
+
+
+
 		bool is_window_closed(window_id id)
 		{
 			return get_from_id(id).is_closed;
@@ -168,6 +187,22 @@ namespace tge::platform
 					info = &get_from_hwnd(hwnd);
 				}
 				break;
+			case WM_ERASEBKGND:
+				return TRUE; // Prevent background erasing, since we handle it in WM_PAINT
+			case WM_PAINT: {
+				PAINTSTRUCT ps;
+				HDC hdc = BeginPaint(hwnd, &ps);
+
+				RECT clientRect;
+				GetClientRect(hwnd, &clientRect);
+
+				HBRUSH hbrBackground = (HBRUSH)GetClassLongPtr(hwnd, GCLP_HBRBACKGROUND);
+
+				FillRect(hdc, &clientRect, hbrBackground);
+
+				EndPaint(hwnd, &ps);
+				break;
+			}
 			default:
 				break;
 			}
@@ -197,11 +232,11 @@ namespace tge::platform
 		wc.style = CS_HREDRAW | CS_VREDRAW; //redraw when resized horizontally and vertically
 		wc.lpfnWndProc = internal_window_proc; // ptr to window_proc
 		wc.cbClsExtra = 0;
-		wc.cbWndExtra = callback ? sizeof(callback) : 0;
+		wc.cbWndExtra = callback ? sizeof(callback) : 0;//additional operations
 		wc.hInstance = 0;
 		wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 		wc.hCursor = LoadCursor(NULL,IDC_ARROW);
-		wc.hbrBackground = CreateSolidBrush(RGB(26,20,76));
+		wc.hbrBackground = CreateSolidBrush(RGB(init_info->r, init_info->g, init_info->b));//windows color
 		wc.lpszMenuName = NULL;
 		wc.lpszClassName = L"TgeWindow";
 		wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
@@ -228,7 +263,7 @@ namespace tge::platform
 		//Create an instance of the window class
 		info.hwnd = CreateWindowEx(
 			0,                     //extened style
-			wc.lpszClassName,      //window class name
+			wc.lpszClassName,      //window registered class name
 			caption,				  //window instance title
 			info.style,			  //window style
 			left,				  //initial diemensions
@@ -244,15 +279,16 @@ namespace tge::platform
 		if (info.hwnd)
 		{
 			DEBUG_OP(SetLastError(0));
-			window_id id = (window_id)add_to_windows(info);
-			SetWindowLongPtr(info.hwnd, GWLP_USERDATA, (LONG_PTR)id);
+			window_id id = (window_id)add_to_windows(info);//adding to windows
+			SetWindowLongPtr(info.hwnd, GWLP_USERDATA, (LONG_PTR)id);//settig id
 
 			if (callback) SetWindowLongPtr(info.hwnd, 0, (LONG_PTR)callback);
 			assert(GetLastError() == 0);
 
 			ShowWindow(info.hwnd, SW_SHOWNORMAL);
 			UpdateWindow(info.hwnd);
-			return window{ id };
+			window created_window = window{ id };
+			return created_window;
 		}
 		return {};
 	}
@@ -324,6 +360,11 @@ namespace tge::platform
 		return is_window_closed(_id);
 	}
 
+	void window::change_color(int red, int green, int blue)
+	{
+		assert(red < 256, green < 356, blue < 256);
+		change_color_window(_id, red, green, blue);
+	}
 }
 
 

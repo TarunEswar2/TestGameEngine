@@ -9,12 +9,15 @@
     <PlatformTarget>x64</PlatformTarget>
     <BaseOutputPath>C:\Users\Tarun\Desktop\Projects\TestGameEngine\x64</BaseOutputPath>
 	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-	<Configurations>Debug;Release;DebugEditor;ReleaseEditor</Configurations>
+	<Configurations>DebugEditor;ReleaseEditor</Configurations>
 	<Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="gameProject\assets\backgroundProjectBrowser.png" />
+    <None Remove="Resources\PrimitiveMeshView\planeTexture.jpg" />
+    <None Remove="Resources\PrimitiveMeshView\planeTexture.png" />
+    <None Remove="Resources\PrimitiveMeshView\planeTexture.webp" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,6 +45,12 @@
     <Content Include="gameProject\assets\backgroundProjectBrowser.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\PrimitiveMeshView\planeTexture.jpg" />
+    <Resource Include="Resources\PrimitiveMeshView\planeTexture.png" />
+    <Resource Include="Resources\PrimitiveMeshView\planeTexture.webp" />
   </ItemGroup>
 
 </Project>

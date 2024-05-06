@@ -21,6 +21,7 @@
 #include"../Utility/Utility.h"
 #include"../Utility/MathTypes.h"
 #include"../Common/id.h"
+#include"../Utility/Math.h"
 
 #ifdef _DEBUG
 #define DEBUG_OP(x) x

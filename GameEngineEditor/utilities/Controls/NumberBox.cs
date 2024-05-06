@@ -20,6 +20,14 @@ namespace GameEngineEditor.utilities.Controls
         private double _mouseXStart;
         private double _multiplier;
 
+        public event RoutedEventHandler ValueChanged
+        {
+            add => AddHandler(ValueChangedEvent, value); 
+            remove => RemoveHandler(ValueChangedEvent, value);
+        }
+        public static readonly RoutedEvent ValueChangedEvent =
+            EventManager.RegisterRoutedEvent(nameof(ValueChanged),RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(NumberBox));
+
         public static readonly DependencyProperty MultiplierProperty = DependencyProperty.Register(
                                             nameof(Multiplier),                 // The name of the property
                                             typeof(double),                // The type of the property
@@ -38,7 +46,13 @@ namespace GameEngineEditor.utilities.Controls
 
                                             new FrameworkPropertyMetadata(
                                             null,                       
-                                            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault)); // The default value of the property
+                                            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(OnValueChanged))); // The default value of the property
+
+        private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            (d as NumberBox).RaiseEvent(new RoutedEventArgs(ValueChangedEvent));
+        }
+
         public string Value 
         {
             get => (string)GetValue(ValueProperty);
@@ -74,7 +88,7 @@ namespace GameEngineEditor.utilities.Controls
                     else if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) _multiplier = 0.1;
                     else _multiplier = 0.01;
                     var newValue = _originalValue + (d*_multiplier*Multiplier);
-                    Value = newValue.ToString("0.#####");
+                    Value = newValue.ToString("G5");
                     _valueChanged = true;
                 }
             }

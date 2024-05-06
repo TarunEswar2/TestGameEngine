@@ -52,7 +52,9 @@ namespace tge {
 			script_ptr create_script(game_entity::entity entity)
 			{
 				assert(entity.is_valid());
-				return std::make_unique<script_class>(entity); //returns unique_pointer<script_class>
+				return std::make_unique<script_class>(entity); 
+				//dynamically allocates a new script_class with constructor arguments script_class
+				// and returns unique_pointer<script_class>
 			}
 
 #ifdef USE_WITH_EDITOR
